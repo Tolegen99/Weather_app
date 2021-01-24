@@ -15,7 +15,8 @@
         <activity android:name=".WeatherDetailActivity"></activity>
 
         <activity
-            android:name=".WeatherListActivity">
+            android:name=".WeatherListActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -6,16 +6,13 @@ public class Weather {
     private String mName;
     private Date mTime;
     private Double mTemp;
-    private String mDescription;
     private float mTempMin;
     private float mTempMax;
     private int mPressure;
-    private int mLottieID;
 
     public Weather(String name, Double temp) {
         mName = name;
         mTemp = temp;
-//        mDescription = description;
 //        mTempMin = tempMin;
 //        mTempMax = tempMax;
 //        mPressure = pressure;
@@ -38,10 +35,6 @@ public class Weather {
         return mTemp;
     }
 
-    public String getDescription() {
-        return mDescription;
-    }
-
     public float getTempMin() {
         return mTempMin;
     }
@@ -54,8 +47,5 @@ public class Weather {
         return mPressure;
     }
 
-    public int getLottieID() {
-        return mLottieID;
-    }
 
 }

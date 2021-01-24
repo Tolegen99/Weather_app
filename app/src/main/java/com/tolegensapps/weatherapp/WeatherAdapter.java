@@ -51,14 +51,12 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
         private TextView mFieldName;
         private TextView mFieldTemp;
         private TextView mFieldTime;
-        private LottieAnimationView mLottieView;
 
         public WeatherHolder(ViewGroup parent) {
             super(mLayoutInflater.inflate(R.layout.item_weather, parent, false));
             mFieldName = itemView.findViewById(R.id.fieldName);
             mFieldTemp = itemView.findViewById(R.id.fieldTemp);
             mFieldTime = itemView.findViewById(R.id.fieldTime);
-            mLottieView = (LottieAnimationView) itemView.findViewById(R.id.lottie_view);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -75,7 +73,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
             mFieldName.setText(mWeather.getName());
             mFieldTemp.setText(String.valueOf(mWeather.getTemp()));
             mFieldTime.setText(String.valueOf(mWeather.getTime()));
-            mLottieView.setAnimation(R.raw.partly_cloudy);
         }
     }
 }

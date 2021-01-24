@@ -18,7 +18,8 @@
         android:onClick="onBtnPressed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_location" />
+        android:backgroundTint="#F22B8E"
+        app:srcCompat="@drawable/ic_save" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

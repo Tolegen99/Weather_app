@@ -2,7 +2,9 @@ package com.tolegensapps.weatherapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -10,7 +12,7 @@ import com.airbnb.lottie.LottieAnimationView;
 public class WeatherDetailActivity extends AppCompatActivity {
 
     private TextView mFieldName, mFieldTemp, mFieldTempMin, mFieldTempMax, mFieldPressure, mFieldTime;
-    private LottieAnimationView mLottieView;
+
 
 
     @Override
@@ -24,6 +26,9 @@ public class WeatherDetailActivity extends AppCompatActivity {
         mFieldTempMax = findViewById(R.id.fieldTempMax);
         mFieldPressure = findViewById(R.id.fieldPressure);
         mFieldTime = findViewById(R.id.fieldTime);
-        mLottieView = findViewById(R.id.lottie_view);
+    }
+
+    public void onBack(View view) {
+        onBackPressed();
     }
 }
