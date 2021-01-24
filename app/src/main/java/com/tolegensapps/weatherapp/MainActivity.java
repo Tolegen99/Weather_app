@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateUI(Weather weather) {
         mWeathers.add(weather);
-        mAdapter = new WeatherAdapter(mWeathers);
+        mAdapter = new WeatherAdapter(mWeathers, getLayoutInflater());
         mRecyclerView.setAdapter(mAdapter);
 
     }
@@ -128,63 +128,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-
-    private class WeatherHolder extends RecyclerView.ViewHolder {
-
-        private Weather mWeather;
-
-        private TextView mFieldName;
-        private TextView mFieldTemp;
-        private TextView mFieldTime;
-        private LottieAnimationView mLottieView;
-
-        public WeatherHolder(LayoutInflater layoutInflater, ViewGroup parent) {
-            super(layoutInflater.inflate(R.layout.item_weather, parent, false));
-            mFieldName = itemView.findViewById(R.id.fieldName);
-            mFieldTemp = itemView.findViewById(R.id.fieldTemp);
-            mFieldTime = itemView.findViewById(R.id.fieldTime);
-            mLottieView = (LottieAnimationView) itemView.findViewById(R.id.lottie_view);
-
-        }
-
-        public void bind(Weather weather) {
-            mWeather = weather;
-
-            mFieldName.setText(mWeather.getName());
-            mFieldTemp.setText(String.valueOf(mWeather.getTemp()));
-            mFieldTime.setText(String.valueOf(mWeather.getTime()));
-            mLottieView.setAnimation(R.raw.storm);
-        }
-    }
-
-    private class WeatherAdapter extends RecyclerView.Adapter<WeatherHolder> {
-
-        private List<Weather> mWeathers;
-
-        public WeatherAdapter(List<Weather> weathers) {
-            mWeathers = weathers;
-        }
-
-
-        @NonNull
-        @Override
-        public WeatherHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new WeatherHolder(getLayoutInflater(), parent);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull WeatherHolder holder, int position) {
-            Weather weather = mWeathers.get(position);
-            holder.bind(weather);
-        }
-
-
-        @Override
-        public int getItemCount() {
-            return mWeathers.size();
         }
     }
 

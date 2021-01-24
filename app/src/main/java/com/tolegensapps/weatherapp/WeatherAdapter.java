@@ -18,15 +18,16 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
     private List<Weather> mWeathers;
     private LayoutInflater mLayoutInflater;
 
-    public WeatherAdapter(List<Weather> weathers) {
+    public WeatherAdapter(List<Weather> weathers, LayoutInflater layoutInflater) {
         mWeathers = weathers;
+        mLayoutInflater = layoutInflater;
     }
 
 
     @NonNull
     @Override
     public WeatherHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new WeatherHolder(mLayoutInflater, parent);
+        return new WeatherHolder(parent);
     }
 
     @Override
@@ -51,13 +52,14 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
         private TextView mFieldTime;
         private LottieAnimationView mLottieView;
 
-        public WeatherHolder(LayoutInflater layoutInflater, ViewGroup parent) {
-            super(layoutInflater.inflate(R.layout.item_weather, parent, false));
+        public WeatherHolder(ViewGroup parent) {
+            super(mLayoutInflater.inflate(R.layout.item_weather, parent, false));
             mFieldName = itemView.findViewById(R.id.fieldName);
             mFieldTemp = itemView.findViewById(R.id.fieldTemp);
             mFieldTime = itemView.findViewById(R.id.fieldTime);
             mLottieView = (LottieAnimationView) itemView.findViewById(R.id.lottie_view);
         }
+
 
         public void bind(Weather weather) {
             mWeather = weather;
