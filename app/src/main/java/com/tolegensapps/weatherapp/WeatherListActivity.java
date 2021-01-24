@@ -3,6 +3,7 @@ package com.tolegensapps.weatherapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -96,7 +97,7 @@ public class WeatherListActivity extends AppCompatActivity {
 
     public static void updateUI(Weather weather) {
         mWeathers.add(weather);
-        WeatherAdapter adapter = new WeatherAdapter(mWeathers, mLayoutInflater);
+        WeatherAdapter adapter = new WeatherAdapter(mWeathers);
         mRecyclerView.setAdapter(adapter);
     }
 
