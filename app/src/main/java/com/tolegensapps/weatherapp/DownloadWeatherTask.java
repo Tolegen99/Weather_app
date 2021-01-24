@@ -55,7 +55,7 @@ public class DownloadWeatherTask extends AsyncTask<String, Void, String> {
             String city = jsonObject.getString("name");
             Double temp = jsonObject.getJSONObject("main").getDouble("temp");
             mWeather = new Weather(city, temp);
-            MainActivity.updateUI(mWeather);
+            WeatherListActivity.updateUI(mWeather);
         } catch (JSONException e) {
             e.printStackTrace();
         }

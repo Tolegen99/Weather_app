@@ -63,7 +63,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
-            app:lottie_rawRes="@raw/foggy" />
+            app:lottie_rawRes="@raw/sunny" />
 
         <TextView
             android:id="@+id/textView"

@@ -1,5 +1,6 @@
 package com.tolegensapps.weatherapp;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,13 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
             mFieldTemp = itemView.findViewById(R.id.fieldTemp);
             mFieldTime = itemView.findViewById(R.id.fieldTime);
             mLottieView = (LottieAnimationView) itemView.findViewById(R.id.lottie_view);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mLayoutInflater.getContext(), WeatherDetailActivity.class);
+                    mLayoutInflater.getContext().startActivity(intent);
+                }
+            });
         }
 
 
@@ -67,7 +75,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
             mFieldName.setText(mWeather.getName());
             mFieldTemp.setText(String.valueOf(mWeather.getTemp()));
             mFieldTime.setText(String.valueOf(mWeather.getTime()));
-            mLottieView.setAnimation(R.raw.storm);
+            mLottieView.setAnimation(R.raw.partly_cloudy);
         }
     }
 }
