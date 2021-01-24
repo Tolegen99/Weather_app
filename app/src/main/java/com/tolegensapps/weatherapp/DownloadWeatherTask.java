@@ -16,7 +16,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class DownloadWeatherTask extends AsyncTask<String, Void, String> {
 
-    Weather mWeather;
+    private Weather mWeather;
 
     @Override
     protected String doInBackground(String... strings) {
