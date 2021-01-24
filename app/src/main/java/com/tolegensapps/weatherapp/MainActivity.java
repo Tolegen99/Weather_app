@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static RecyclerView mRecyclerView;
     private static WeatherAdapter mAdapter;
+    private static LayoutInflater mLayoutInflater;
+
 
     private EditText mEditTextCity;
     private Button mbtnSearch;
@@ -56,12 +58,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mLayoutInflater = getLayoutInflater();
 
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mEditTextCity = findViewById(R.id.editTextCityName);
         mbtnSearch = findViewById(R.id.btnSearch);
+
+
 
         mbtnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,59 +81,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void updateUI(Weather weather) {
+    public static void updateUI(Weather weather) {
         mWeathers.add(weather);
-        mAdapter = new WeatherAdapter(mWeathers, getLayoutInflater());
+        mAdapter = new WeatherAdapter(mWeathers, mLayoutInflater);
         mRecyclerView.setAdapter(mAdapter);
 
-    }
-
-    private class DownloadWeatherTask extends AsyncTask<String, Void, String> {
-
-        Weather mWeather;
-
-        @Override
-        protected String doInBackground(String... strings) {
-            URL url = null;
-            HttpsURLConnection urlConnection = null;
-            StringBuilder result = new StringBuilder();
-            try {
-                url = new URL(strings[0]);
-                urlConnection = (HttpsURLConnection) url.openConnection();
-                InputStream inputStream = urlConnection.getInputStream();
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader reader = new BufferedReader(inputStreamReader);
-                String line = reader.readLine();
-                while (line != null) {
-                    result.append(line);
-                    line = reader.readLine();
-                }
-                return result.toString();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            try {
-                JSONObject jsonObject = new JSONObject(s);
-                String city = jsonObject.getString("name");
-                Double temp = jsonObject.getJSONObject("main").getDouble("temp");
-                mWeather = new Weather(city, temp);
-                updateUI(mWeather);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 }
