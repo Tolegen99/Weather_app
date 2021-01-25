@@ -10,13 +10,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tolegensapps.weatherapp.databinding.ItemWeatherBinding;
-
 import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.Inflater;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder> {
+
+    public static final String EXTRA_ID = "_id";
+    public static final String EXTRA_NAME = "city_name";
+    public static final String EXTRA_TIME = "time";
+    public static final String EXTRA_TEMP = "temperature";
+    public static final String EXTRA_TEMP_MIN = "temp_min";
+    public static final String EXTRA_TEMP_MAX = "temp_max";
+    public static final String EXTRA_PRESSURE = "pressure";
 
     private Context mContext;
     private ArrayList mId, mCityName, mTime, mTemperature, mTempMin, mTempMax, mPressure;
@@ -47,17 +51,26 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         holder.mFieldName.setText(String.valueOf(mCityName.get(position)));
         holder.mFieldTemp.setText(String.valueOf(mTemperature.get(position)));
         holder.mFieldTime.setText(String.valueOf(mTime.get(position)));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, WeatherDetailActivity.class);
+                intent.putExtra(EXTRA_NAME, String.valueOf(mCityName.get(position)));
+                intent.putExtra(EXTRA_TIME, String.valueOf(mTime.get(position)));
+                intent.putExtra(EXTRA_TEMP, String.valueOf(mTemperature.get(position)));
+                intent.putExtra(EXTRA_TEMP_MIN, String.valueOf(mTempMin.get(position)));
+                intent.putExtra(EXTRA_TEMP_MAX, String.valueOf(mTempMax.get(position)));
+                intent.putExtra(EXTRA_PRESSURE, String.valueOf(mPressure.get(position)));
+                mContext.startActivity(intent);
+            }
+        });
 
     }
-
 
     @Override
     public int getItemCount() {
         return mId.size();
     }
-
-
-
 
     public class WeatherViewHolder extends RecyclerView.ViewHolder {
 
@@ -70,13 +83,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             mFieldTemp = itemView.findViewById(R.id.fieldTemp);
             mFieldTime = itemView.findViewById(R.id.fieldTime);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, WeatherDetailActivity.class);
-                    mContext.startActivity(intent);
-                }
-            });
         }
     }
 }

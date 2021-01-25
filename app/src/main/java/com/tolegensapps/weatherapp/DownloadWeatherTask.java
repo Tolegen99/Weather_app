@@ -1,8 +1,19 @@
 package com.tolegensapps.weatherapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,14 +25,15 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class DownloadWeatherTask extends AsyncTask<String, Void, String> {
 
-    private Context mContext;
-    private Weather mWeather;
+    private static Context mContext;
 
     public DownloadWeatherTask(Context context) {
         mContext = context;
@@ -75,5 +87,33 @@ public class DownloadWeatherTask extends AsyncTask<String, Void, String> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    static void getLocation(Context context) {
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+        fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                Location location = task.getResult();
+                if (location != null) {
+                    try {
+                        Geocoder geocoder = new Geocoder(context,
+                                Locale.getDefault());
+                        List<Address> addresses = geocoder.getFromLocation(
+                                location.getLatitude(), location.getLongitude(), 1);
+
+                        String coord = "lat=" + addresses.get(0).getLatitude() +
+                                "&lon=" + addresses.get(0).getLongitude();
+                        DownloadWeatherTask Dtask = new DownloadWeatherTask(context);
+                        String url = String.format(WeatherListActivity.WEATHER_URL, coord);
+                        Dtask.execute(url);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 }

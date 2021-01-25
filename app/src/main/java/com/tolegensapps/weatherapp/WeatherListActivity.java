@@ -1,6 +1,7 @@
 package com.tolegensapps.weatherapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,12 +12,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -34,14 +38,11 @@ import java.util.Locale;
 public class WeatherListActivity extends AppCompatActivity {
 
     private static RecyclerView mRecyclerView;
-    private static LayoutInflater mLayoutInflater;
-    private static List<Weather> mWeathers = new ArrayList<>();
     private FloatingActionButton mBtnCurrentLocation;
     private static WeatherDatabaseHelper mMyDB;
     private static ArrayList<String> mId, mCityName, mTime, mTemperature, mTempMin, mTempMax, mPressure;
-    private static WeatherAdapter mAdapter;
 
-    private final String WEATHER_URL =
+    public static final String WEATHER_URL =
             "https://api.openweathermap.org/data/2.5/weather?%s&appid=fb65e5fbd82b86c13341170565524eea&lang=ru&units=metric";
 
     @Override
@@ -49,7 +50,16 @@ public class WeatherListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_list);
 
-        mLayoutInflater = getLayoutInflater();
+        initVariables();
+        storeDataInArrays();
+        updateUI(this);
+        hideFloatingButtonOnScroll();
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    }
+
+    private void initVariables() {
         mRecyclerView = findViewById(R.id.recyclerView);
         mBtnCurrentLocation = findViewById(R.id.btnCurrentLocation);
 
@@ -61,14 +71,10 @@ public class WeatherListActivity extends AppCompatActivity {
         mTempMin = new ArrayList<>();
         mTempMax = new ArrayList<>();
         mPressure = new ArrayList<>();
-
-        storeDataInArrays();
-        updateUI(this);
-
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        hideFloatingButtonOnScroll();
-
     }
+
+// When Adapter has  a changes 'notifyDataSetChanged()' was not working for me, so I 'reinvent the wheel' with drop all of
+//    data from adapter and restore again with new changes
 
     static void clearDataFromArray() {
         mId.clear();
@@ -90,53 +96,23 @@ public class WeatherListActivity extends AppCompatActivity {
             mTempMin.add(cursor.getString(4));
             mTempMax.add(cursor.getString(5));
             mPressure.add(cursor.getString(6));
-
         }
     }
 
-    public void onBtnPressed(View view) {
+    public void onGetCurrentLocation(View view) {
         if (ActivityCompat.checkSelfPermission(WeatherListActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            getLocation();
+            DownloadWeatherTask.getLocation(WeatherListActivity.this);
         } else {
             ActivityCompat.requestPermissions(WeatherListActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
     }
 
-
-    @SuppressLint("MissingPermission")
-    private void getLocation() {
-        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                Location location = task.getResult();
-                if (location != null) {
-                    try {
-                        Geocoder geocoder = new Geocoder(WeatherListActivity.this,
-                                Locale.getDefault());
-                        List<Address> addresses = geocoder.getFromLocation(
-                                location.getLatitude(), location.getLongitude(), 1);
-
-                        String coord = "lat=" + addresses.get(0).getLatitude() +
-                                "&lon=" + addresses.get(0).getLongitude();
-                        DownloadWeatherTask Dtask = new DownloadWeatherTask(WeatherListActivity.this);
-                        String url = String.format(WEATHER_URL, coord);
-                        Dtask.execute(url);
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-    }
-
     public static void updateUI(Context context) {
-        mAdapter = new WeatherAdapter(context, mId, mCityName, mTime,
+        WeatherAdapter adapter = new WeatherAdapter(context, mId, mCityName, mTime,
                 mTemperature, mTempMin, mTempMax, mPressure);
-        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(adapter);
     }
 
     public void hideFloatingButtonOnScroll() {
@@ -148,11 +124,35 @@ public class WeatherListActivity extends AppCompatActivity {
                 } else {
                     mBtnCurrentLocation.show();
                 }
-
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
     }
 
+    public void deleteAllData(View view) {
+        confirmDialog();
+    }
 
+    void confirmDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete All?");
+        builder.setMessage("Are you sure you want to delete all Data?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                WeatherDatabaseHelper myDB = new WeatherDatabaseHelper(WeatherListActivity.this);
+                myDB.deleteAllData();
+                Intent intent = new Intent(WeatherListActivity.this, WeatherListActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.create().show();
+    }
 }
