@@ -1,30 +1,33 @@
 package com.tolegensapps.weatherapp;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Weather {
-    private String mName;
+
+    private String mCityName;
     private Date mTime;
     private Double mTemp;
-    private float mTempMin;
-    private float mTempMax;
+    private Double mTempMin;
+    private Double mTempMax;
     private int mPressure;
 
-    public Weather(String name, Double temp) {
-        mName = name;
+    public Weather(String cityName, Double temp, Double tempMin, Double tempMax, int pressure) {
+        mCityName = cityName;
         mTemp = temp;
-//        mTempMin = tempMin;
-//        mTempMax = tempMax;
-//        mPressure = pressure;
+        mTempMin = tempMin;
+        mTempMax = tempMax;
+        mPressure = pressure;
         mTime = new Date();
     }
 
-    public String getName() {
-        return mName;
+    public String getCityName() {
+        return mCityName;
     }
 
-    public void setName(String name) {
-        mName = name;
+    public void setCityName(String cityName) {
+        mCityName = cityName;
     }
 
     public Date getTime() {
@@ -35,11 +38,11 @@ public class Weather {
         return mTemp;
     }
 
-    public float getTempMin() {
+    public Double getTempMin() {
         return mTempMin;
     }
 
-    public float getTempMax() {
+    public Double getTempMax() {
         return mTempMax;
     }
 

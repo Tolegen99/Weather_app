@@ -1,6 +1,8 @@
 package com.tolegensapps.weatherapp;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.view.LayoutInflater;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,12 +13,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
+
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class DownloadWeatherTask extends AsyncTask<String, Void, String> {
 
+    private Context mContext;
     private Weather mWeather;
+
+    public DownloadWeatherTask(Context context) {
+        mContext = context;
+    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -54,8 +63,15 @@ public class DownloadWeatherTask extends AsyncTask<String, Void, String> {
             JSONObject jsonObject = new JSONObject(s);
             String city = jsonObject.getString("name");
             Double temp = jsonObject.getJSONObject("main").getDouble("temp");
-            mWeather = new Weather(city, temp);
-            WeatherListActivity.updateUI(mWeather);
+            Double tempMin = jsonObject.getJSONObject("main").getDouble("temp_min");
+            Double tempMax = jsonObject.getJSONObject("main").getDouble("temp_max");
+            int pressure = jsonObject.getJSONObject("main").getInt("pressure");
+            WeatherDatabaseHelper myDB = new WeatherDatabaseHelper(mContext);
+            myDB.addWeather(city, new Date(), temp, tempMin, tempMax, pressure);
+            WeatherListActivity.clearDataFromArray();
+            WeatherListActivity.storeDataInArrays();
+            WeatherListActivity.updateUI(mContext);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
